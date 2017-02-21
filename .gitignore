@@ -3,3 +3,4 @@
 *.nc
 *.pyc
 mean_temp.py
+*.txt

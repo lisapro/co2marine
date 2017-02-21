@@ -78,13 +78,10 @@ pH_2 = pH - 0.11 # conversion from NBS scale to Total
 #def read_necdf_brom(ncfile_brom):
 
 
-#fh1 = Dataset('BROM_Baltic_outnewsulfates.nc', mode='r')
-#fh1 = Dataset('BROM_Baltic_out_so4_6000.nc', mode='r')
-#fh1 = Dataset('BROM_Baltic_outnewsulfates.nc', mode='r')
-#fh1 = Dataset('BROM_Baltic_out_time_changed_2005.nc', mode='r')
-#nc_file_brom = 'BROM_Baltic_out_1992.nc'
-nc_file_brom = 'BROM_Baltic_out_1993.nc'
 
+#nc_file_brom = 'BROM_Baltic_out_1992.nc'
+#nc_file_brom = 'BROM_Baltic_out_1993.nc'
+nc_file_brom = 'BROM_Baltic_out_b3_15_1998_10cm.nc' 
 
 fh1 = Dataset(nc_file_brom, mode='r')
 
@@ -283,8 +280,8 @@ def write_pdf():
     for filename in filenames:
         merger.append(filename)    
     ####    merger.append(PdfFileReader(file(filename, 'rb')))
-    merger.write("merged_Baltic_validation_{}.pdf".format(nc_file_brom))
-    
+    merger.write("merged_Baltic_validation_{}.pdf".format(nc_file_brom[:-3]))
+    # [:-3] here we delete .nc in a name of output pdf file 
 
 
 

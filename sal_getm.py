@@ -3,6 +3,10 @@ Created on 7. feb. 2017
 
 @author: ELP
 '''
+# Script reads Netcdf file with GETM output and WOD data for chosen region 
+# It Plots vertical profiles of Salinity for each day from GETM
+# And vertical profiles of Salinity for each station at WOD
+# It calculates and plots the year average profile for GETM and WOD data 
 
 import pdb #python debugger 
 from datetime import datetime, timedelta,date

@@ -41,7 +41,6 @@ lon_bgch = [18.27465, 18.20873333, 18.23761667,18.20283333,
 st_bgch =  [20,22, 11,1,6,9,10,15,17,19]
 
 # coordinated of TS input from GETM model
-
 b3_getm = [18.1555,55.4863] # E,N 
 
 # coordinates of area with climate relaxation data
