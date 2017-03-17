@@ -1,4 +1,5 @@
 ## CO2 marine
+Set of scripts using for validating brom to field data 
 ###b3_map.py
 The script creates a map of spatial distrubution for available data from:
 WOD (World Ocean Database), field data, modeling input. 
