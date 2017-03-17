@@ -4,3 +4,7 @@
 *.pyc
 mean_temp.py
 *.txt
+
+test2.py
+totest.py
+*.dat

@@ -11,6 +11,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import numpy.ma as ma
+import os,sys
+from tkinter.filedialog import askopenfilename
 plt.style.use('ggplot')
 
 #plt.style.use('ggplot')
@@ -38,7 +40,11 @@ with open('field1.txt', 'r') as f:
     #dicmask = np.isfinite(dic_masked)
     #print (dic_masked)
 
-fname = 'BROM_Baltic_out_b3_15_1998_10cm.nc'    
+#fname = 'BROM_Baltic_out_b3_15_1998_10cm.nc'    
+
+
+fname = 'BROM_Baltic_out_3.nc'  
+
 fh =  Dataset(fname)
 depth_brom = fh.variables['z'][:] 
 depth2_brom = fh.variables['z2'][:] #middle points
@@ -71,7 +77,7 @@ sed_depth_brom = depth_sed
         
 fh.close()
 
-with PdfPages('field_data_plot.pdf') as pdf: 
+with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf: 
            
     s3mask = np.isfinite(dic) 
     #print (len(depth))
@@ -274,7 +280,7 @@ with PdfPages('field_data_plot.pdf') as pdf:
 
 
    
-    #plt.show()
+    plt.show()
     pdf.savefig(figure)
     plt.close()
 

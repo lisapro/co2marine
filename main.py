@@ -23,6 +23,9 @@ import matplotlib.gridspec as gridspec
 import datetime
 from PyPDF2 import PdfFileWriter, PdfFileReader,PdfFileMerger
 plt.style.use('ggplot')
+import os, sys
+import tkinter as tk
+from tkinter.filedialog import askopenfilename
 
 def read_netcdf_odv(ncfile):
 
@@ -54,7 +57,7 @@ def read_netcdf_odv(ncfile):
     
     return depth,temp,sal,o2,po4,si,no3,no2,pH,chl,dates,alk,depth2
 
-ncfile = 'data_from_OSD_small domain.nc'
+ncfile = 'data_from_Baltic_small_domain_1980.nc'
 w = read_netcdf_odv(ncfile)
 
 depth = w[0]
@@ -74,14 +77,22 @@ depth2 = w[12]
 #o2[o2 > 0] =  o2 * 46.6
 o2_2 = o2 * 46.6 # change units from ml/l to mmol/l
 pH_2 = pH - 0.11 # conversion from NBS scale to Total
-
+alk_2 = alk * 1000 # change units from meq/l to mmol/m-3
 #def read_necdf_brom(ncfile_brom):
 
 
 
-#nc_file_brom = 'BROM_Baltic_out_1992.nc'
-#nc_file_brom = 'BROM_Baltic_out_1993.nc'
-nc_file_brom = 'BROM_Baltic_out_b3_15_1998_10cm.nc' 
+# = 'BROM_Baltic_out_3.nc'
+root = tk.Tk()
+root.withdraw() #To show only the dialog without any other GUI elements
+# Get the dialog and choose the file to read 
+ask_filename = askopenfilename(initialdir= os.getcwd(),
+                           filetypes =(("NetCDF file", "*.nc"),("All Files","*.*")),
+                           title = "Choose a file.")
+                           
+#We get the whole path to file
+# So we split it and thake the the second element (only name.nc)                           )
+nc_file_brom = os.path.split(ask_filename)[1]
 
 fh1 = Dataset(nc_file_brom, mode='r')
 
@@ -275,6 +286,9 @@ def write_pdf():
     files('Si')
     figure_pdf(no3,no3_brom,'NO3')
     files('NO3')
+    figure_pdf(alk_2,alk_brom,'Alk')
+    files('Alk')    
+    
     
     merger = PdfFileMerger()
     for filename in filenames:
