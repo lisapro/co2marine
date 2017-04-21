@@ -8,3 +8,4 @@ mean_temp.py
 test2.py
 totest.py
 *.dat
+/results
