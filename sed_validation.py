@@ -13,6 +13,10 @@ import matplotlib.gridspec as gridspec
 import numpy.ma as ma
 import os,sys
 from tkinter.filedialog import askopenfilename
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtWidgets import  QFileDialog
+from PyQt5 import QtCore, QtGui, QtWidgets
+
 plt.style.use('ggplot')
 
 #plt.style.use('ggplot')
@@ -39,12 +43,12 @@ with open('field1.txt', 'r') as f:
     #dic_masked = np.ma.masked_where(dic == 'NaN' , dic)
     #dicmask = np.isfinite(dic_masked)
     #print (dic_masked)
-
+ask_filename = askopenfilename(initialdir= os.getcwd(),
+                           filetypes =(("NetCDF file", "*.nc"),("All Files","*.*")),
+                           title = "Choose a file.")
 #fname = 'BROM_Baltic_out_b3_15_1998_10cm.nc'    
-
-
-fname = 'BROM_Baltic_out_3.nc'  
-
+fname = os.path.split(ask_filename)[1] # 'BROM_Baltic_out_0604171year.nc'    
+print (fname)
 fh =  Dataset(fname)
 depth_brom = fh.variables['z'][:] 
 depth2_brom = fh.variables['z2'][:] #middle points
@@ -197,6 +201,7 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
     print_all(ax03,so4,r'$SO _4$') 
     #print (so4)    
     #plt.show()
+    plt.savefig('sed_val1.png')
     pdf.savefig(figure1)
     plt.close()
 
@@ -204,7 +209,7 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
 
 
     # create figure with size close to a4 (vertical)
-    figure = plt.figure(figsize=(10, 8 ), dpi=100)
+    figure2 = plt.figure(figsize=(10, 8 ), dpi=100)
     gs = gridspec.GridSpec(2, 2,
                        width_ratios=[1,1],
                        height_ratios=[1,1]
@@ -212,10 +217,10 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
     gs.update(wspace=0.2,hspace = 0.2,left=0.1,
        right=0.97,bottom = 0.05, top = 0.9) 
 
-    ax00 = figure.add_subplot(gs[0])
-    ax01 = figure.add_subplot(gs[1])    
-    ax02 = figure.add_subplot(gs[2])
-    ax03 = figure.add_subplot(gs[3]) 
+    ax00 = figure2.add_subplot(gs[0])
+    ax01 = figure2.add_subplot(gs[1])    
+    ax02 = figure2.add_subplot(gs[2])
+    ax03 = figure2.add_subplot(gs[3]) 
     #ax04 = figure.add_subplot(gs[4])
     #ax05 = figure.add_subplot(gs[5]) 
     
@@ -276,12 +281,10 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
        # n = n + 6  
     ''' 
 
-   
+    #plt.show()
+    plt.savefig('sed_val2.png')    
+    pdf.savefig(figure2)
 
-
-   
-    plt.show()
-    pdf.savefig(figure)
     plt.close()
 
 

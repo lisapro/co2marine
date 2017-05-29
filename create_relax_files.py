@@ -71,14 +71,21 @@ def readfile(ncfile,name_in_file,varname):
             var2.append(a)   
             depth2.append(d)
         pass
+    var2 = np.array(var2)
+
     
     #5  transpose back 
-    var = np.array(var2).T     
+    var = np.array(var2).T  
+     
+    #for n in range(0,14):
+    #print (var[95])
+        #if np.isnan(var[n]).all()== True:
+        #'in' #print (var2.shape)
     depth = np.array(depth2).T     
     
     #6 interpolate to standard levels
     var_int = []
-    ynew = np.arange(0,100, 1)
+    ynew = np.arange(0,78, 1)
     length = (len(var))
     for n in range(0,length):
         f = interpolate.interp1d(depth[n],var[n], bounds_error=False,
@@ -94,11 +101,13 @@ def readfile(ncfile,name_in_file,varname):
 
 # call function to read nc file with WOD data  
 #data = readfile('data_from_Baltic_small_domain_1980.nc','var12','alk')
-#data = readfile('data_from_Baltic_small_domain_1980.nc','var6','si')
+#data = readfile('data_from_Baltic_small_domain_1980.nc','var10','chlorophyll')
+#data = readfile('data_from_Baltic_small_domain_1980.nc','var10','phytoplankton')
+data = readfile('data_from_Baltic_small_domain_1980.nc','var6','si')
 #data = readfile('data_from_Baltic_small_domain_1980.nc','var7','no3')
 #data = readfile('data_from_Baltic_small_domain_1980.nc','var9','pH')
 #data = readfile('data_from_Baltic_small_domain_1980.nc','var5','po4')
-data = readfile('data_from_Baltic_small_domain_1980.nc','var4','o2')
+#data = readfile('data_from_Baltic_small_domain_1980.nc','var4','o2')
 
 
 #name of file, name of variable  
@@ -166,6 +175,9 @@ depth1 = []
 days = []
 #lenghesof months
 
+from scipy.interpolate import interp1d
+from scipy.interpolate import UnivariateSpline
+
 monthes = [31,28,31,30,31,30,31,31,30,31,30,31]
 means = [mean_m,mean_m_2,mean_m_3,mean_m_4,
          mean_m_5,mean_m_6,mean_m_7, mean_m_8,
@@ -173,8 +185,56 @@ means = [mean_m,mean_m_2,mean_m_3,mean_m_4,
 
 len_means = len(means)
 
+boundary_top = []
+for n in range(0,12):
+    if varname == 'alk':
+        i = means[n][0]*1000
+        boundary_top.append(i)
+    elif varname == 'o2' :
+        i = means[n][0]* 44.6 
+        boundary_top.append(i) 
+    elif varname == 'phytoplankton'  : 
+        i = means[n][0]/4.    
+        boundary_top.append(i)               
+    else :     
+        i = means[n][0]
+        boundary_top.append(i)
+        
+
+xnew = np.linspace(1, 12, num=365, endpoint=True)
+x = np.linspace(1,12,12)
+f = interp1d(x, boundary_top, kind='cubic')
+
+spl = UnivariateSpline(x, boundary_top)
+if varname == "pH":
+    spl.set_smoothing_factor(0)
+elif varname == 'no3': 
+    spl.set_smoothing_factor(0.1)
+elif varname == 'alk': 
+    spl.set_smoothing_factor(20000)    
+
+    
+
+fig3 = plt.figure(figsize= (9,3))
+#plt.plot(x, boundary_top, 'o-', xnew, f(xnew), '-')
+plt.title('{}_top boundary condition'.format(varname))
+plt.scatter(x, boundary_top,c ='g')
+plt.plot(xnew, spl(xnew), 'g', lw=1)
+#plt.axhline(0)
+data = spl(xnew)
+
+
+#np.savetxt('{}_top_boundary.dat'.format(varname), data,delimiter=' ')
+#fig3.savefig('{}_top_boundary_condition.png'.format(varname))
+#plt.show()
+plt.close()      
+
+#combined_top = np.vstack((xnew,spl(xnew))) #.T #days,
+#np.savetxt('{}_top_boundary.dat'.format(varname), (spl(xnew)), delimiter=' ')  
+
 means_1 = []
 depths = []
+
 for m in range(0,12): # cycle for months
     # take mean for one month and write it 30 times  
     for n in range(0,monthes[m]): 
@@ -190,9 +250,12 @@ if varname == 'alk':
 elif varname == 'o2':
     # convert units from ml/l to micromoles/l
     means_1 = means_1 * 44.6   
-#print (means_1)    
+elif varname == 'phytoplankton':
+    # convert units from ml/l to micromoles/l
+    means_1 = means_1/4.   
 # depth,0,0,0, ( for different days) ...1,1,1...99,99,99,...
 depths = np.array(depths).T.flatten()  
+
 
 # cycle to calculate numbers of days 
 for n in range(0,100):
@@ -204,20 +267,40 @@ days = np.array(days)
 
 #plot to check
 fig,(ax,ax2) = plt.subplots(ncols=2,sharey = True)
-ax.scatter(means_1,depths)
-ax2.plot(mean_m,depth_int,'-')  
-ax2.plot(mean_m_2,depth_int,'-') 
-ax2.plot(mean_m_3,depth_int,'-') 
-ax2.plot(mean_m_4,depth_int,'-') 
-ax2.plot(mean_m_5,depth_int,'-') 
-ax2.plot(mean_m_6,depth_int,'-') 
-ax2.plot(mean_m_7,depth_int,'-') 
-ax2.plot(mean_m_8,depth_int,'-') 
-ax2.plot(mean_m_9,depth_int,'-') 
-ax2.plot(mean_m_10,depth_int,'-') 
-ax2.plot(mean_m_11,depth_int,'-') 
-ax2.plot(mean_m_12,depth_int,'-') 
-#plt.show()
+
+ncfile = 'data_from_Baltic_small_domain_1980.nc'
+fh = Dataset(ncfile, mode='r')
+
+#1 - read data
+depth_nan = (fh.variables['var1'][:][:]).filled(fill_value= np.nan)
+#date_time_nan = fh.variables['date_time'][:]       
+var_nan =  (fh.variables['var10'][:][:]).filled(fill_value= np.nan) 
+var2_nan = np.array(var_nan)/4.              
+fh.close()
+ax.scatter(var2_nan,depth_nan)  
+ax2.scatter(var_nan,depth_nan)  
+#ax.set_ylim(80,0)
+
+#ax.plot(var_nan,depth_nan ,'-') 
+#ax.plot(var_nan,depth_nan ,'-') 
+
+
+#ax2.set_ylim(100,0)
+#legend = ax.legend( shadow=False, loc='best')
+#legend = ax2.legend( shadow=False, loc='best')
+'''#plt.legend()
+plt.legend([bgch,gas,getm,wod,area],
+           ['Field data (2012)',
+            'Stations with gas diffusion chimneys',
+            'T,S,Kz data from GETM model\n(1990-2010)',
+            'Valdiation data from WOD \n(1980-2010)',
+            
+            'B3 area'],
+           loc='best') '''
+
+
+
+plt.show()
 
 #create 2d array with all data  
 combined = np.vstack((days,depths,means_1)).T #days,

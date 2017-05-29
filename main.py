@@ -30,12 +30,10 @@ from tkinter.filedialog import askopenfilename
 def read_netcdf_odv(ncfile):
 
     fh = Dataset(ncfile, mode='r')
-
     #depth = fh.variables['var1'][:][:]
     depthmasked = fh.variables['var1'][:][:]
     depth = depthmasked.filled(fill_value= np.nan)    
-    depth2 = fh.variables['var1'][:][:]
-    
+    depth2 = fh.variables['var1'][:][:]    
     temp = fh.variables['var2'][:][:]
     sal = fh.variables['var3'][:][:]    
     o2 = fh.variables['var4'][:][:]
@@ -48,8 +46,7 @@ def read_netcdf_odv(ncfile):
     alk = fh.variables['var12'][:][:]   
     date_time = fh.variables['date_time'][:]    
     lat = fh.variables['latitude'][:]
-    long = fh.variables['longitude'][:]
-                                 
+    long = fh.variables['longitude'][:]                              
     fh.close()
 
     dates = num2date(date_time[:],units='days since 1990-01-01',
@@ -91,7 +88,7 @@ ask_filename = askopenfilename(initialdir= os.getcwd(),
                            title = "Choose a file.")
                            
 #We get the whole path to file
-# So we split it and thake the the second element (only name.nc)                           )
+# So we split it and take the the second element (only name.nc)                           )
 nc_file_brom = os.path.split(ask_filename)[1]
 
 fh1 = Dataset(nc_file_brom, mode='r')
@@ -118,7 +115,7 @@ len_depth2_brom = depth2_brom.size
 for n in range(0,(len_depth2_brom-1)):
     if kz[1,n] == 0:
         y2max = depth2[n]         
-        ny2max = n         
+        ny2max = n-2         
         break
                  
 def figure_pdf(var_wod,var_brom,varname):
