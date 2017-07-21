@@ -243,7 +243,7 @@ def show_figure(var_wod,var_brom,varname):
     #print(len(depth_roms))
     for n in range(0,lenght,1): #field data
         ax03.plot(var_wod[n],depth[n],linewidth = 0.2, color = '#7dadbc')
-        ax02.plot(var_wod[n],depth[n],linewidth = 0.5) 
+        ax01.plot(var_wod[n],depth[n],linewidth = 0.5) 
         
     for m in range(0,365,10):
         ax01.plot(var_brom[m][0:ny2max],depth_brom[0:ny2max],
@@ -260,7 +260,70 @@ def show_figure(var_wod,var_brom,varname):
     frame = legend.get_frame()
     frame.set_facecolor('white')          
     plt.show() 
- 
+
+def show_figure2(var_wod,var_brom, var_wod2,var_brom2,varname1,varname2):
+    #print (depth2[0])
+    figure = plt.figure(figsize = (6,4))
+    gs = gridspec.GridSpec(1,2)
+    gs.update(wspace=0.15,hspace = 0.1,left=0.1,
+               right=0.99,bottom = 0.1, top = 0.9) 
+    ax00 = figure.add_subplot(gs[0]) # water     
+    #ax01 = figure.add_subplot(gs[1]) # water       
+    #ax02 = figure.add_subplot(gs[2]) # water   
+    ax03 = figure.add_subplot(gs[1]) 
+    
+    #len = ma.shape(o2)#(len(o2))
+    lenght = (len(var_wod))
+    
+
+    #len_depth2 = len(depth2_brom)
+    #def calculate_ybbl():
+    for n in range(0,(len_depth2_brom-1)):
+        if kz[1,n] == 0:
+            y2max = depth2[n]         
+            ny2max = n         
+            break
+    
+            
+    #ax00.set_title('Var from BROM all days')
+    #plt.title('{}month{}_{}.txt'.format(boundary,month,name)) 
+    '''ax00.set_title('{} from BROM all days'.format(varname))  
+    ax01.set_title('{} from BROM every 10 day'.format(varname))
+    ax02.set_title('{} from WOD '.format(varname))
+    ax03.set_title('BROM vs WOD ')'''
+    ax00.set_ylim(90,0)
+    ax00.set_ylabel('depth, m')
+
+    ax03.set_ylim(90,0)
+    ax00.axhspan(90,0,color='#dbf0fd',alpha = 0.7 )
+    ax03.axhspan(90,0,color='#dbf0fd',alpha = 0.7 )
+    ax00.set_title(varname1)
+    ax03.set_title(varname2)
+    for n in range(0,lenght,10): #field data
+        ax00.plot(var_wod[n],depth[n],linewidth = 0.2,zorder = 1, color = '#78cccc' ) #
+        ax03.plot(var_wod2[n],depth[n],linewidth = 0.5, color = '#78cccc')       
+
+    for m in range(0,365,10):
+        ax00.plot(var_brom[m][0:ny2max],depth_brom[0:ny2max],
+                  linewidth = 0.2, color = '#d75752',zorder = 10 ) 
+        ax03.plot(var_brom2[m][0:ny2max],depth_brom[0:ny2max],
+                  linewidth = 0.4, color = '#d75752') #n - day   
+        
+    #legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    ax03.plot(var_wod2[0],depth[0],linewidth = 0.2, color = '#78cccc',
+                  alpha = 1, label= u"WOD") #, alpha= 0.5
+                  
+    ax03.plot(var_brom2[0][0:ny2max],depth_brom[0:ny2max],linewidth = 0.4,
+                color = '#d75752',label= u"BROM") #n - day   
+    ax03.legend(loc = 'best',facecolor= 'white') 
+    #ax00.plot(var_wod[0],depth[0],linewidth = 0.2, color = '#7dadbc',
+    #              alpha = 1, label= u"field")#, alpha= 0.5
+    #ax00.plot(var_brom[0][0:ny2max],depth_brom[0:ny2max],linewidth = 0.4,
+    #              color = '#b62733',label= u"modelled") #n - day     
+    #legend = ax03.legend( shadow=False,bbox_to_anchor=(0.8, 0.35))  
+    #frame = legend.get_frame()
+    #frame.set_facecolor('white')          
+    plt.show()  
     
 filenames = []
 def files(varname):
@@ -296,10 +359,12 @@ def write_pdf():
 
 
 
-write_pdf() 
+#write_pdf() 
 
-#show_figure(pH_2,pH_brom,'pH') 
-#show_figure(temp,temp_brom,'Temp') 
+#show_figure2(pH_2,pH_brom,'pH') 
+#show_figure2(si,si_brom,no3,no3_brom,r'$\rm Si\ \mu M/l $',r'$\rm NO_3\ \mu M/l $') 
+show_figure2(pH_2,pH_brom,alk_2,alk_brom, r'$\rm pH\ \mu M/l $',r'$\rm Alkalinity\ \mu M/l $') 
+#show_figure2(temp,temp_brom,sal,sal_brom, 'Temp', "Salinity") 
 
 
 def print_kz():

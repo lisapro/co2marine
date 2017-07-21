@@ -172,8 +172,9 @@ plt.legend([bgch,gas,getm,wod,area],
            loc='best') 
 # if you want to put legent to some fixed positon
 #bbox_to_anchor=(0.8, 0.35))       
-plt.savefig(filename = 'B3_map.png')
-#plt.show()
+
+#plt.savefig(filename = 'B3_map.png')
+plt.show()
 
 
 

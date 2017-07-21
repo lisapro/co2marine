@@ -43,12 +43,13 @@ with open('field1.txt', 'r') as f:
     #dic_masked = np.ma.masked_where(dic == 'NaN' , dic)
     #dicmask = np.isfinite(dic_masked)
     #print (dic_masked)
-ask_filename = askopenfilename(initialdir= os.getcwd(),
+"""ask_filename = askopenfilename(initialdir= os.getcwd(),
                            filetypes =(("NetCDF file", "*.nc"),("All Files","*.*")),
-                           title = "Choose a file.")
-#fname = 'BROM_Baltic_out_b3_15_1998_10cm.nc'    
-fname = os.path.split(ask_filename)[1] # 'BROM_Baltic_out_0604171year.nc'    
-print (fname)
+                           title = "Choose a file.")"""
+
+fname = "BROM_Baltic_out_baseline_1year.nc"
+#fname = os.path.split(ask_filename)[1] # 'BROM_Baltic_out_0604171year.nc'    
+#print (fname)
 fh =  Dataset(fname)
 depth_brom = fh.variables['z'][:] 
 depth2_brom = fh.variables['z2'][:] #middle points
@@ -95,19 +96,24 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
             #start = n        
             #end = n+6
             axis.plot(var[start_list[m]:end_list[m]],depth[start_list[m]:end_list[m]],
-                      linewidth = 0.4, linestyle =  '-', marker='o',
-                       markersize= 4)  
+                      linewidth = 0.7, linestyle =  '-', marker='o',
+                       markersize= 4,color = '#78cccc',
+                       markerfacecolor  = '#3b7777',
+                       markeredgecolor  = '#3b7777') 
+              
             axis.annotate('{}'.format(st_list[m]),(var[end_list[m]-1],
                                                    depth[end_list[m]-1]), 
                           arrowprops=dict(arrowstyle="-"),
                           textcoords='offset points',xytext=(-15, -25))  
-            axis.set_ylim(18,0)
+            axis.set_ylim(18,-3)
+            
             axis.set_title('{}'.format(title))
-
-               
+        axis.axhspan(0,18,color='#b08b52',alpha = 0.4,label = "sediment"  )
+        axis.axhspan(-3,0,color='#dbf0fd',alpha = 0.7,label = "water" )        
     var_list = [h2s,po4,nh4,alk,dic,so4] 
     title_list = ['h2s','po4','nh4','alk','dic','so4']  
-     
+    
+    
     #ax_list = [ax00,ax01,ax02,ax03,ax04,ax05] 
     start_list = [0,6,12,18,24,30,36,43,49,55]
     end_list = [6,12,18,24,30,36,43,49,55,61]
@@ -140,9 +146,9 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
     #print(len(time_brom))
     
     #line colors
-    summ = '#d0576f' 
-    wint =  '#8dc0e7'
-    spr_aut ='#998970'
+    summ = '#d75752' #'#d0576f' 
+    wint =  '#d75752' #'#8dc0e7'
+    spr_aut ='#d75752' #'#998970'
                                   
     #ax02.plot(po4_brom[0],sed_depth_brom)            
 
@@ -197,24 +203,21 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
         ax00.annotate(txt, (lon_bgch[i],lat_bgch[i]),xytext=(17, 0),
                 ha='right', va='bottom',textcoords='offset points'  )
         
-    print_all(ax02,po4,r'$PO _4$')  
-    print_all(ax03,so4,r'$SO _4$') 
+    #print_all(ax02,po4,r'$PO _4$')  
+    #print_all(ax03,so4,r'$SO _4$') 
     #print (so4)    
     #plt.show()
-    plt.savefig('sed_val1.png')
-    pdf.savefig(figure1)
+    #plt.savefig('sed_val1.png')
+    #pdf.savefig(figure1)
     plt.close()
 
 
 
 
     # create figure with size close to a4 (vertical)
-    figure2 = plt.figure(figsize=(10, 8 ), dpi=100)
-    gs = gridspec.GridSpec(2, 2,
-                       width_ratios=[1,1],
-                       height_ratios=[1,1]
-                       )
-    gs.update(wspace=0.2,hspace = 0.2,left=0.1,
+    figure2 = plt.figure(figsize=(6, 8 ))
+    gs = gridspec.GridSpec(2, 2)
+    gs.update(wspace=0.2,hspace = 0.2,left=0.15,
        right=0.97,bottom = 0.05, top = 0.9) 
 
     ax00 = figure2.add_subplot(gs[0])
@@ -225,27 +228,35 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
     #ax05 = figure.add_subplot(gs[5]) 
     
     
-    print_all(ax00,alk,'Alkalinity')      
-    print_all(ax02,h2s,'H2S')  
-    print_all(ax03,nh4,'NH4')  
+#    print_all(ax00,alk,'Alkalinity')
+    print_all(ax00,so4,r'$\rm SO_4\ \mu M/l$')          
+    print_all(ax02,h2s,r'$\rm H_2 S\ \mu M/l$')  
+    print_all(ax03,nh4, r'$\rm NH_4 \ \mu M/l$')  
     
     for m in range(1,9):  
         # Dic should bi plotted separately because of NaNs   
         ax01.plot(dic[start_list[m]:end_list[m]][s3mask[start_list[m]:end_list[m]]],
         depth[start_list[m]:end_list[m]][s3mask[start_list[m]:end_list[m]]],
-        linewidth = 0.4, linestyle =  '-', marker='o',
-                       markersize= 4)      
-        ax01.set_ylim(18,0)
-        ax01.set_title('DIC')
+        linewidth = 0.7, linestyle =  '-', marker='o',
+                       markersize= 4,c = '#78cccc',
+                   markerfacecolor  = '#3b7777',
+                   markeredgecolor  = '#3b7777')      
+        ax01.set_ylim(18,-3)
+        
+        ax01.set_title(r'$\rm DIC\ \mu M/l$')
         ax01.annotate('{}'.format(st_list[m]),(dic[end_list[m]-1],
                                                    depth[end_list[m]-1]), 
                           arrowprops=dict(arrowstyle="-"),
-                          textcoords='offset points',xytext=(-15, -25))          
+                          textcoords='offset points',xytext=(-15, -25))  
+    ax01.axhspan(0,18,color='#b08b52',alpha = 0.4,label = "sediment"  )    
+    ax01.axhspan(-3,0,color='#dbf0fd',alpha = 0.7,label = "water" )            
     for n in range(0,365):
         if n >= 0 and n<=60 or n >= 335 and n <365 : #"winter" 
             
-            ax00.plot(alk_brom[n],sed_depth_brom,alpha = 0.1, 
-                      linewidth = 0.1 , zorder = 1, c = wint)                 
+            #ax00.plot(alk_brom[n],sed_depth_brom,alpha = 0.1, 
+            #          linewidth = 0.1 , zorder = 1, c = wint)  
+            ax00.plot(so4_brom[n],sed_depth_brom,alpha = 0.1, 
+                      linewidth = 0.1 , zorder = 1, c = wint)                             
             ax01.plot(dic_brom[n],sed_depth_brom,alpha = 0.1, 
                       linewidth = 0.1 , zorder = 1, c = wint)             
             ax02.plot(h2s_brom[n],sed_depth_brom,alpha = 0.1, 
@@ -253,8 +264,10 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
             ax03.plot(nh4_brom[n],sed_depth_brom,alpha = 0.1, 
                       linewidth = 0.1 , zorder = 1, c = wint)              
         elif n >= 150 and n < 249: #"summer"
-            ax00.plot(alk_brom[n],sed_depth_brom,alpha = 0.1, 
-                      linewidth = 0.1 , zorder = 1, c = summ )            
+            #ax00.plot(alk_brom[n],sed_depth_brom,alpha = 0.1, 
+            #          linewidth = 0.1 , zorder = 1, c = summ ) 
+            ax00.plot(so4_brom[n],sed_depth_brom,alpha = 0.1, 
+                      linewidth = 0.1 , zorder = 1, c = summ )                        
             ax01.plot(dic_brom[n],sed_depth_brom,alpha = 0.1, 
                       linewidth = 0.1 , zorder = 1, c = summ )            
             ax02.plot(h2s_brom[n],sed_depth_brom,alpha = 0.1, 
@@ -262,14 +275,21 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
             ax03.plot(nh4_brom[n],sed_depth_brom,alpha = 0.1, 
                       linewidth = 0.1 , zorder = 1, c = summ )                          
         else : #"autumn and spring"
-            ax00.plot(alk_brom[n],sed_depth_brom,alpha = 0.1, 
-                      linewidth = 0.1 , zorder = 1,c = spr_aut)             
+            #ax00.plot(alk_brom[n],sed_depth_brom,alpha = 0.1, 
+            #          linewidth = 0.1 , zorder = 1,c = spr_aut)  
+            ax00.plot(so4_brom[n],sed_depth_brom,alpha = 0.1, 
+                      linewidth = 0.1 , zorder = 1,c = spr_aut)                         
             ax01.plot(dic_brom[n],sed_depth_brom,alpha = 0.1, 
                       linewidth = 0.1 , zorder = 1,c = spr_aut)             
             ax02.plot(h2s_brom[n],sed_depth_brom,alpha = 0.1, 
                       linewidth = 0.1 , zorder = 1,c = spr_aut) 
             ax03.plot(nh4_brom[n],sed_depth_brom,alpha = 0.1, 
-                      linewidth = 0.1 , zorder = 1,c = spr_aut )          
+                      linewidth = 0.1 , zorder = 1,c = spr_aut ) 
+    ax00.plot(so4_brom[0],sed_depth_brom, 
+              linewidth = 0.1 , zorder = 1, c = wint,marker='o',
+                       markersize= 4,markeredgecolor = '#6b2b29') #,markerfacecolor  = '#3b7777',
+                       #markeredgecolor  = '#3b7777')   
+                    
             #n = n + 6  '''        
     #for axis in (ax00,ax01,ax02,ax03)  :
     #    axis.set_ylim(20,0)
@@ -280,10 +300,12 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
        # ax04.plot(dic[start:end], depth[start:end],'o-')  
        # n = n + 6  
     ''' 
-
-    #plt.show()
-    plt.savefig('sed_val2.png')    
-    pdf.savefig(figure2)
+            
+    ax00.set_ylabel('depth, cm')
+    ax02.set_ylabel('depth, cm')
+    plt.show()
+    plt.savefig('sed_val222.png')    
+    #pdf.savefig(figure2)
 
     plt.close()
 

@@ -128,11 +128,11 @@ for ax in (ax02,ax03,ax04) :
 figure2.savefig('Relax_files_po4o2no3.png') 
 #plt.show()
 
-with open('chlorophyll_out.dat', 'r') as f:
+'''with open('chlorophyll_out.dat', 'r') as f:
     reader = csv.reader(f, delimiter=' ')
     r = []
     for row in reader:
         r.append(row)
     r1 =np.transpose(np.array(r[:]) )
-    po4 = np.array(r1[2]) 
+    po4 = np.array(r1[2]) '''
 f.close() 
