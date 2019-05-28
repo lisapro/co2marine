@@ -12,7 +12,11 @@ from scipy.interpolate import griddata
 import matplotlib.gridspec as gridspec
 from scipy.interpolate import interp1d
 from scipy.interpolate import UnivariateSpline
+import os 
     
+path = r'E:\Users\ELP\Python plot\co2marine\input_data'   
+odvfile = os.path.join(path,'data_from_Baltic_small_domain_1980.nc') 
+
 def readfile(ncfile,name_in_file,varname):
     # Read  data from netcdf file 
     fh = Dataset(ncfile, mode='r')
@@ -35,7 +39,6 @@ def readfile(ncfile,name_in_file,varname):
     #2  delete nans by columns
     # cycle to remove stations where all the values are nan    
     var = []
-    #date_time = []
     months = []
     depth = []
     l = len(var_nan)
@@ -67,7 +70,6 @@ def readfile(ncfile,name_in_file,varname):
         a = var[n]
         d = depth[n]
         if np.isnan(a).all()== True:
-            #print ('all is nan') #or np.isnan(z).all()== True: 
             continue
         else :
             var2.append(a)   
@@ -78,11 +80,6 @@ def readfile(ncfile,name_in_file,varname):
     
     #5  transpose back 
     var = np.array(var2).T  
-     
-    #for n in range(0,14):
-    #print (var[95])
-        #if np.isnan(var[n]).all()== True:
-        #'in' #print (var2.shape)
     depth = np.array(depth2).T     
     
     #6 interpolate to standard levels
@@ -126,39 +123,26 @@ def readfile(ncfile,name_in_file,varname):
         return   var_m,means  
 
     # call function to calculate means for each month
-    jan = select_by_month(1,var_int)
-    feb = select_by_month(2,var_int)
-    mar = select_by_month(3,var_int)
-    apr = select_by_month(4,var_int)
-    may = select_by_month(5,var_int)
-    june = select_by_month(6,var_int)
-    july = select_by_month(7,var_int)
-    aug = select_by_month(8,var_int)
-    sept = select_by_month(9,var_int)
-    okt = select_by_month(10,var_int)
-    nov = select_by_month(11,var_int)
-    dec = select_by_month(12,var_int)
-
-    var_m, mean_m  = jan[0], jan[1]
-    var_m_2, mean_m_2  = feb[0], feb[1]
-    var_m_3, mean_m_3  = mar[0], mar[1]
-    var_m_4, mean_m_4  = apr[0], apr[1]
-    var_m_5, mean_m_5  = may[0], may[1]
-    var_m_6, mean_m_6  = june[0], june[1]
-    var_m_7, mean_m_7  = july[0], july[1]
-    var_m_8, mean_m_8  = aug[0], aug[1]
-    var_m_9, mean_m_9  = sept[0], sept[1]
-    var_m_10, mean_m_10  = okt[0], okt[1]
-    var_m_11, mean_m_11  = nov[0], nov[1]
-    var_m_12, mean_m_12  = dec[0], dec[1]    
+    var_m, mean_m  = select_by_month(1,var_int) #jan[0], jan[1]
+    var_m_2, mean_m_2  = select_by_month(2,var_int) # feb[0], feb[1]
+    var_m_3, mean_m_3  = select_by_month(3,var_int) #mar[0], mar[1]
+    var_m_4, mean_m_4  = select_by_month(4,var_int) #apr[0], apr[1]
+    var_m_5, mean_m_5  = select_by_month(5,var_int) #may[0], may[1]
+    var_m_6, mean_m_6  = select_by_month(6,var_int) #june[0], june[1]
+    var_m_7, mean_m_7  = select_by_month(7,var_int) #july[0], july[1]
+    var_m_8, mean_m_8  = select_by_month(8,var_int) #aug[0], aug[1]
+    var_m_9, mean_m_9  = select_by_month(9,var_int) #sept[0], sept[1]
+    var_m_10, mean_m_10  = select_by_month(10,var_int) #okt[0], okt[1]
+    var_m_11, mean_m_11  = select_by_month(11,var_int) #nov[0], nov[1]
+    var_m_12, mean_m_12  = select_by_month(12,var_int) #dec[0], dec[1]    
     #return depth_int,months,var_int,varname #depth_nan,var_nan,date_time_nan|
 
-    #print (var_m.shape)
+
     array1 = []
     depth1 = []
     days = []
-    #lenghesof months
-        
+    
+    #lenghesof months        
     monthes = [31,28,31,30,31,30,31,31,30,31,30,31]
     means = [mean_m,mean_m_2,mean_m_3,mean_m_4,
              mean_m_5,mean_m_6,mean_m_7, mean_m_8,
@@ -195,9 +179,9 @@ def readfile(ncfile,name_in_file,varname):
 
     return spl,varname,x,boundary_top
 
-fig3 = plt.figure(figsize= (9,8))
+fig3 = plt.figure(figsize= (5,7))
 gs = gridspec.GridSpec(5, 1) 
-gs.update(left=0.06, right=0.92,top = 0.91,bottom = 0.07,
+gs.update(left=0.1, right=0.97,top = 0.91,bottom = 0.07,
                    wspace=0.2,hspace=0.3) 
 ax = fig3.add_subplot(gs[0])
 ax1 = fig3.add_subplot(gs[1])
@@ -207,42 +191,28 @@ ax3 = fig3.add_subplot(gs[3])
 ax4 = fig3.add_subplot(gs[4])
 
 for axis in (ax1,ax2,ax3,ax):
-    axis.tick_params(bottom='off',labelbottom='off')
-    
+    axis.tick_params(bottom='off',labelbottom='off')    
 xnew = np.linspace(1, 12, num=365, endpoint=True)
 
-
-# call function to read nc file with WOD data  
-
-data_alk = readfile('data_from_Baltic_small_domain_1980.nc','var12','alk')
-data_no3 = readfile('data_from_Baltic_small_domain_1980.nc','var7','no3')
-data_si = readfile('data_from_Baltic_small_domain_1980.nc','var6','si')
-data_po4 = readfile('data_from_Baltic_small_domain_1980.nc','var5','po4')
-data_o2 = readfile('data_from_Baltic_small_domain_1980.nc','var4','o2')
-
-
-
-def plot(datafile,axis):
+def plot(axis,varodv,varname):
+    datafile = readfile(odvfile,varodv,varname)
     #ax 
     spl = datafile[0]
     varname = datafile[1]
     x = datafile[2]
     boundary_top = datafile[3]
     axis.set_title('{}_top boundary condition'.format(varname))
-    axis.scatter(x, boundary_top,c ='g')
-    axis.plot(xnew, spl(xnew), 'g', lw=1)
+    axis.scatter(x, boundary_top,c ='k')
+    axis.plot(xnew, spl(xnew), 'k', lw=1)
+    np.savetxt('{}_top_boundary.dat'.format(varname), boundary_top,delimiter=' ')
+    
+plot(ax,'var12','alk')
+plot(ax1,'var7','no3')
+plot(ax2,'var6','si')
+plot(ax3,'var5','po4')
+plot(ax4,'var4','o2')
 
-plot(data_si,ax)
-plot(data_no3,ax1)
-plot(data_po4,ax2)
-plot(data_o2,ax3)
-plot(data_alk,ax4)
-
-
-
-
-#np.savetxt('{}_top_boundary.dat', data,delimiter=' ')
-fig3.savefig('top_boundary_conditions.png')
+#fig3.savefig('top_boundary_conditions.png')
 plt.show()
 plt.close()   
 

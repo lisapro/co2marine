@@ -80,7 +80,7 @@ root.withdraw()
 ask_filename = askopenfilename(initialdir= os.getcwd(),
                 filetypes =(("NetCDF file", "*.nc"),
                 ("All Files","*.*")),title = "Choose a file.")
-fname = os.path.split(ask_filename)[1] 
+fname = ask_filename #os.path.split(ask_filename)[1] 
 fh = Dataset(fname)
 depth_brom = np.array(fh.variables['z'][:])  
 alk_brom =  np.array(fh.variables['Alk'][:])

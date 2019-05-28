@@ -13,6 +13,21 @@ import numpy.ma as ma
 
 
 plt.style.use('ggplot')
+
+
+
+
+import pandas as pd
+import os
+import matplotlib.pyplot as plt
+
+path = r'E:\Users\ELP\Python plot\co2marine\input_data'
+file =  os.path.join(path,'StBar-2012-3 for Elizaveta.xls')
+
+
+
+
+'''
 with open('field1.txt', 'r') as f:
     # important to specify delimiter right 
     reader = csv.reader(f, delimiter='\t')
@@ -46,7 +61,7 @@ with open('field1.txt', 'r') as f:
     s1mask = np.isfinite(dic[0:6])
     s2mask = np.isfinite(dic[6:12])
     s3mask = np.isfinite(dic) 
-    
+'''    
     
 def print_all(axis,var,title):
     for m in range(1,9):
@@ -61,7 +76,7 @@ def print_all(axis,var,title):
         axis.set_title('{}'.format(title))
 
             
-var_list = [h2s,po4,nh4,alk,dic,so4] 
+#var_list = [h2s,po4,nh4,alk,dic,so4] 
 title_list = ['h2s','po4','nh4','alk','dic','so4']  
  
 #ax_list = [ax00,ax01,ax02,ax03,ax04,ax05] 
@@ -104,16 +119,17 @@ print_all(ax05,so4,r'$\rm SO _4\ \mu M/l$')
 
 for m in range(1,9):  
     # Dic should bi plotted separately because of NaNs   
-    ax01.plot(dic[start_list[m]:end_list[m]][s3mask[start_list[m]:end_list[m]]],
-    depth[start_list[m]:end_list[m]][s3mask[start_list[m]:end_list[m]]],
-    linewidth = 0.4, linestyle =  '-', marker='o',
-                   markersize= 4)      
+    #ax01.plot(dic[start_list[m]:end_list[m]][s3mask[start_list[m]:end_list[m]]],
+    #depth[start_list[m]:end_list[m]][s3mask[start_list[m]:end_list[m]]],
+    #linewidth = 0.4, linestyle =  '-', marker='o',
+    #               markersize= 4)      
     ax01.set_ylim(18,0)
     ax01.set_title('DIC')
-    ax01.annotate('{}'.format(st_list[m]),(dic[end_list[m]-1],
-                                               depth[end_list[m]-1]), 
-                      arrowprops=dict(arrowstyle="-",ec="k"),
-                      textcoords='offset points',xytext=(-15, -25))          
+    #ax01.annotate('{}'.format(st_list[m]),(dic[end_list[m]-1],
+    #                                           depth[end_list[m]-1]), 
+    #                  arrowprops=dict(arrowstyle="-",ec="k"),
+    
+                      #textcoords='offset points',xytext=(-15, -25))          
      
  #for axis in (ax00,ax01,ax02,ax03)  :
  #    axis.set_ylim(20,0)

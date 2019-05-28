@@ -16,11 +16,12 @@ from tkinter.filedialog import askopenfilename
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import  QFileDialog
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+import pandas as pd
 plt.style.use('ggplot')
 
 #plt.style.use('ggplot')
 #read input file 
+'''
 with open('field1.txt', 'r') as f:
     # important to specify delimiter right 
     reader = csv.reader(f, delimiter='\t')
@@ -43,11 +44,15 @@ with open('field1.txt', 'r') as f:
     #dic_masked = np.ma.masked_where(dic == 'NaN' , dic)
     #dicmask = np.isfinite(dic_masked)
     #print (dic_masked)
-"""ask_filename = askopenfilename(initialdir= os.getcwd(),
-                           filetypes =(("NetCDF file", "*.nc"),("All Files","*.*")),
-                           title = "Choose a file.")"""
+'''
+    
+#ask_filename = askopenfilename(initialdir= os.getcwd(),
+#                           filetypes =(("NetCDF file", "*.nc"),("All Files","*.*")),
+#                           title = "Choose a file.")
 
-fname = "BROM_Baltic_out_baseline_1year.nc"
+fname = (r'E:\Users\ELP\Fortran\baltic_2\data_baltic\BROM_Baltic_out.nc') 
+
+#ask_filename #"BROM_Baltic_out_baseline_1year.nc"
 #fname = os.path.split(ask_filename)[1] # 'BROM_Baltic_out_0604171year.nc'    
 #print (fname)
 fh =  Dataset(fname)
@@ -82,14 +87,14 @@ sed_depth_brom = depth_sed
         
 fh.close()
 
-with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf: 
+with PdfPages('sed_val.pdf'.format(fname)) as pdf: 
            
-    s3mask = np.isfinite(dic) 
+    '''s3mask = np.isfinite(dic) 
     #print (len(depth))
         #xs = np.arange(0,1)
     s1mask = np.isfinite(dic[0:6])
     s2mask = np.isfinite(dic[6:12])
-    s3mask = np.isfinite(dic) 
+    s3mask = np.isfinite(dic) '''
     def print_all(axis,var,title):
         #n = 0  
         for m in range(1,9):
@@ -110,7 +115,7 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
             axis.set_title('{}'.format(title))
         axis.axhspan(0,18,color='#b08b52',alpha = 0.4,label = "sediment"  )
         axis.axhspan(-3,0,color='#dbf0fd',alpha = 0.7,label = "water" )        
-    var_list = [h2s,po4,nh4,alk,dic,so4] 
+    #var_list = [h2s,po4,nh4,alk,dic,so4] 
     title_list = ['h2s','po4','nh4','alk','dic','so4']  
     
     
@@ -151,8 +156,13 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
     spr_aut ='#d75752' #'#998970'
                                   
     #ax02.plot(po4_brom[0],sed_depth_brom)            
-
-    
+    path = r'E:\Users\ELP\Python plot\co2marine\input_data'
+    file =  os.path.join(path,'StBar-2012-3 for Elizaveta.xls')    
+    #print_all(ax02,po4,r'$PO _4$') 
+    df = pd.read_excel(file,'data_geochemistry')
+    po4 = df['PO43-'][1:]
+    ax02.plot(po4, df['Sediment depth'][1:],'o--')
+    ax02.set_ylim(18,-3)   
     for n in range(0,365):
         if n >= 0 and n<=60 or n >= 335 and n <365 : #"winter" 
             ax02.plot(po4_brom[n],sed_depth_brom,alpha = 0.1, 
@@ -203,13 +213,16 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
         ax00.annotate(txt, (lon_bgch[i],lat_bgch[i]),xytext=(17, 0),
                 ha='right', va='bottom',textcoords='offset points'  )
         
-    #print_all(ax02,po4,r'$PO _4$')  
+
+    #plt.ylim(15,0)
+    #plt.show() 
+    
     #print_all(ax03,so4,r'$SO _4$') 
     #print (so4)    
     #plt.show()
     #plt.savefig('sed_val1.png')
     #pdf.savefig(figure1)
-    plt.close()
+    #plt.close()
 
 
 
@@ -229,7 +242,7 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
     
     
 #    print_all(ax00,alk,'Alkalinity')
-    print_all(ax00,so4,r'$\rm SO_4\ \mu M/l$')          
+    '''print_all(ax00,so4,r'$\rm SO_4\ \mu M/l$')          
     print_all(ax02,h2s,r'$\rm H_2 S\ \mu M/l$')  
     print_all(ax03,nh4, r'$\rm NH_4 \ \mu M/l$')  
     
@@ -249,7 +262,8 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
                           arrowprops=dict(arrowstyle="-"),
                           textcoords='offset points',xytext=(-15, -25))  
     ax01.axhspan(0,18,color='#b08b52',alpha = 0.4,label = "sediment"  )    
-    ax01.axhspan(-3,0,color='#dbf0fd',alpha = 0.7,label = "water" )            
+    ax01.axhspan(-3,0,color='#dbf0fd',alpha = 0.7,label = "water" )      
+    '''      
     for n in range(0,365):
         if n >= 0 and n<=60 or n >= 335 and n <365 : #"winter" 
             
@@ -285,11 +299,15 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
                       linewidth = 0.1 , zorder = 1,c = spr_aut) 
             ax03.plot(nh4_brom[n],sed_depth_brom,alpha = 0.1, 
                       linewidth = 0.1 , zorder = 1,c = spr_aut ) 
+            
     ax00.plot(so4_brom[0],sed_depth_brom, 
               linewidth = 0.1 , zorder = 1, c = wint,marker='o',
                        markersize= 4,markeredgecolor = '#6b2b29') #,markerfacecolor  = '#3b7777',
-                       #markeredgecolor  = '#3b7777')   
-                    
+                       #markeredgecolor  = '#3b7777') 
+    ax00.set_ylim(18,-3)                   
+    ax01.set_ylim(18,-3)                     
+    ax02.set_ylim(18,-3)                   
+    ax03.set_ylim(18,-3)                
             #n = n + 6  '''        
     #for axis in (ax00,ax01,ax02,ax03)  :
     #    axis.set_ylim(20,0)
@@ -304,7 +322,7 @@ with PdfPages('sed_val_{}.pdf'.format(fname)) as pdf:
     ax00.set_ylabel('depth, cm')
     ax02.set_ylabel('depth, cm')
     plt.show()
-    plt.savefig('sed_val222.png')    
+    #plt.savefig('sed_val222.png')    
     #pdf.savefig(figure2)
 
     plt.close()

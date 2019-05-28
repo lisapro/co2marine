@@ -4,7 +4,9 @@
 *.pyc
 mean_temp.py
 *.txt
-
+*.project
+*.pydevproject
+*.xls
 test2.py
 totest.py
 *.dat

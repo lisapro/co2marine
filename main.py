@@ -89,7 +89,7 @@ ask_filename = askopenfilename(initialdir= os.getcwd(),
                            
 #We get the whole path to file
 # So we split it and take the the second element (only name.nc)                           )
-nc_file_brom = os.path.split(ask_filename)[1]
+nc_file_brom = ask_filename #os.path.split()[0]
 
 fh1 = Dataset(nc_file_brom, mode='r')
 
